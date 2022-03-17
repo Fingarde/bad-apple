@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bad Apple</title>
+</head>
+<body>
+    <div id="bad-checkbox"></div>
+     <!-- <button id="button" value="BAD APPLE">Start</button> -->
+    
+    <video id="video" controls width="480" height="480">
+        <source src="output.webm" type="video/webm">
+    </video>
+    <canvas id="canvas" height="60"></canvas>
+    
+    <script>
+        let h = 60;
+
+        let container = document.querySelector('#bad-checkbox')
+        let video = document.querySelector('#video')
+
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        video.addEventListener('play', function(){
+            draw(video,context,h,h);
+        },false);
+
+      /* 
+        document.getElementById('button').addEventListener("click", function(){
+            video.play()
+        })*/
+
+        function draw(v,c,w,h) {
+            if(v.paused || v.ended) return false;
+            c.drawImage(v,0,0,w,h);
+
+            let data = c.getImageData(0, 0, h, h)
+       
+
+            for(let y = 0; y < h; y++) {
+                for(let x = 0; x < h; x++) {
+                   let value = data.data[(y * h * 4) + (x * 4)]
+
+                   let checkbox = container.children.item(y).children.item(x)
+
+                   if(value >= 128) {
+                    checkbox.checked = false
+                   }
+                   else {
+                    checkbox.checked = true
+                   }
+                }
+            }
+            
+
+
+            setTimeout(draw,20,v,c,w,h);
+        }
+
+
+       for(let y = 0; y < h; y++) {
+            let div = document.createElement('div')
+            div.classList.add("piok")
+
+            for(let x = 0; x < h; x++) {
+                let checkbox = document.createElement('input')
+                checkbox.type = 'checkbox'
+                div.appendChild(checkbox)
+            }
+
+            container.appendChild(div)
+        }
+
+ 
+
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+           /* background-color: blue; */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+          
+        }
+
+        .piok {
+           /* margin: -px -2px;*/
+           height: 13px;
+        }
+
+        #bad-checkbox, video {
+            border: 4px solid rgba(0, 0, 0, 0.383);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        video {
+            margin-left: 20px;
+        }
+      
+
+     /*   input[type=checkbox] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+        }
+
+        input[type=checkbox] {
+            height: 15px;
+            width: 15px;
+            background: #fff;
+            border: solid #DDD 1px;
+
+        }
+
+        input[type="checkbox"]:checked {
+        
+            background: #2B2B2B;
+            border: solid #4D4D4D 1px;
+            margin:0px;
+        
+        }*/
+
+        canvas {
+            display: none;
+        }
+     
+        button {
+            margin-left: 50px;
+            width:8%;
+            height: 8%;
+        }
+    </style>
+</body>
+</html>
